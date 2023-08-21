@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { User, Tweet } from './entities';
 
 @Injectable()
@@ -10,8 +10,15 @@ export class AppService {
     if (!username || !avatar) {
       throw new BadRequestException('All fields are required!');
     }
+    
+    const existingUser = this.users.find(user => user.username === username);
+    if (existingUser) {
+      throw new ConflictException('Username already exists.');
+    }
+  
     this.users.push(new User(username, avatar));
   }
+  
 
   addTweet(username: string, tweet: string): void {
     const user = this.users.find(u => u.username === username);

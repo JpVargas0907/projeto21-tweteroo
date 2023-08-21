@@ -1,7 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, HttpCode } from '@nestjs/common';
 import { AppService } from './app.service';
-import { HttpStatus } from '@nestjs/common';
 
 @Controller()
 export class AppController {
@@ -13,11 +12,12 @@ export class AppController {
   }
 
   @Post('sign-up')
+  @HttpCode(200)
   signUp(@Body() body: { username: string, avatar: string }): string {
     this.appService.signUp(body.username, body.avatar);
     return 'OK';
-  }  
-
+  }
+  
   @Post('tweets')
   addTweet(@Body() body: { username: string, tweet: string }): string {
     this.appService.addTweet(body.username, body.tweet);
