@@ -1,24 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { User, Tweet } from './entities';
 
 @Injectable()
 export class AppService {
-  private readonly users = [];
-  private readonly tweets = [];
+  private readonly users: User[] = [];
+  private readonly tweets: Tweet[] = [];
 
-  signUp(username: string, avatar: string): string {
-    this.users.push({ username, avatar });
-    return 'OK';
+  signUp(username: string, avatar: string): void {
+    if (!username || !avatar) {
+      throw new BadRequestException('All fields are required!');
+    }
+    this.users.push(new User(username, avatar));
   }
 
-  addTweet(username: string, tweet: string): string {
-    const avatar = this.users.find(user => user.username === username)?.avatar;
-    this.tweets.push({ username, tweet, avatar });
-    return 'OK';
+  addTweet(username: string, tweet: string): void {
+    const user = this.users.find(u => u.username === username);
+    if (!user) {
+      throw new UnauthorizedException('Unauthorized user!');
+    }
+    this.tweets.push(new Tweet(user, tweet));
   }
 
   getTweets(): any[] {
-    const lastTweets = this.tweets.slice(-10);
-    return lastTweets;
+    const lastTweets = this.tweets.slice(-15);
+    return lastTweets.map(tweet => ({
+      username: tweet.user.username,
+      avatar: tweet.user.avatar,
+      tweet: tweet.tweet,
+    }));
+  }
+
+  getTweetsByUsername(username: string): any[] {
+    const userTweets = this.tweets.filter(tweet => tweet.user.username === username);
+    return userTweets.map(tweet => ({
+      username: tweet.user.username,
+      avatar: tweet.user.avatar,
+      tweet: tweet.tweet,
+    }));
   }
 
   getUsers(): any[] {
