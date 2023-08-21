@@ -26,11 +26,18 @@ export class AppController {
 
   @Get('tweets')
   getTweets(@Query('page') page?: number): any[] {
+    const tweetsPerPage = 15; // Defina a quantidade de tweets por página
+    
     if (page && page < 1) {
       throw new BadRequestException('Informe uma página válida!');
     }
-    return this.appService.getTweets();
-  }
+  
+    if (page) {
+      return this.appService.getTweetsPaginated(page, tweetsPerPage);
+    } else {
+      return this.appService.getTweets();
+    }
+  }  
 
   @Get('tweets/:username')
   getTweetsByUsername(@Param('username') username: string): any[] {

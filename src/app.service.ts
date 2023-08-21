@@ -37,6 +37,19 @@ export class AppService {
     }));
   }
 
+  getTweetsPaginated(page: number, tweetsPerPage: number): any[] {
+    const startIndex = (page - 1) * tweetsPerPage;
+    const endIndex = startIndex + tweetsPerPage;
+    
+    const tweets = this.tweets.slice(startIndex, endIndex);
+    
+    return tweets.map(tweet => ({
+      username: tweet.user.username,
+      avatar: tweet.user.avatar,
+      tweet: tweet.tweet,
+    }));
+  }
+  
   getTweetsByUsername(username: string): any[] {
     const userTweets = this.tweets.filter(tweet => tweet.user.username === username);
     return userTweets.map(tweet => ({
