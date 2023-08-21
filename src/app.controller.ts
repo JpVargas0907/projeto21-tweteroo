@@ -1,16 +1,22 @@
 import { BadRequestException } from '@nestjs/common';
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
+import { HttpStatus } from '@nestjs/common';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get('')
+  getTest() {
+    return "I'm okay!";
+  }
+
   @Post('sign-up')
   signUp(@Body() body: { username: string, avatar: string }): string {
     this.appService.signUp(body.username, body.avatar);
     return 'OK';
-  }
+  }  
 
   @Post('tweets')
   addTweet(@Body() body: { username: string, tweet: string }): string {

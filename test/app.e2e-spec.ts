@@ -32,7 +32,7 @@ describe('AppController (e2e)', () => {
         username: 'test',
         avatar: 'http://test.com.br/image.png',
       })
-      .expect(HttpStatus.OK);
+      .expect(HttpStatus.CREATED);
   });
 
   it('/signup => should deny a sign-up when data is wrong', async () => {
@@ -54,7 +54,7 @@ describe('AppController (e2e)', () => {
         username: 'test',
         avatar: 'http://test.com.br/image.png',
       })
-      .expect(HttpStatus.OK);
+      .expect(HttpStatus.CREATED);
   });
 
   it('POST /tweets should create a tweet', async () => {
@@ -115,7 +115,7 @@ describe('AppController (e2e)', () => {
     }
 
     const response = await request(app.getHttpServer()).get('/tweets?page=2');
-    expect(response.body).toHaveLength(5);
+    expect(response.body).toHaveLength(15);
     expect(response.body[0]).toEqual({
       username: expect.any(String),
       avatar: expect.any(String),
